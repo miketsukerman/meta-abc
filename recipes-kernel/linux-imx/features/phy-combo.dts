@@ -1,0 +1,26 @@
+// Shared DTS supporting either AR8035 or RTL8211FS
+/dts-v1/;
+/ {
+    // ... (other board-specific definitions)
+
+    mdio {
+        phy: ethernet-phy@0 {
+            compatible = "ethernet-phy-id004d.d072", "qcom,at8035",
+                         "ethernet-phy-id001c.c916", "realtek,rtl8211f";
+            reg = <0>; // PHY address (adjust to hardware)
+            reset-gpios = <&gpio 15 GPIO_ACTIVE_LOW>; // Shared reset GPIO
+
+            // AR8035-specific properties (ignored by RTL8211FS)
+            qcom,keep-pll-enabled;
+
+            // RTL8211FS-specific properties (ignored by AR8035)
+            realtek,leds-config = <0x0d>;
+        };
+    };
+
+    eth0 {
+        phy-handle = <&phy>;
+        phy-mode = "rgmii-id";
+        status = "okay";
+    };
+};
